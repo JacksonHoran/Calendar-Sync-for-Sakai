@@ -37,8 +37,8 @@ Everything needed to go from "works on my machine" to the Chrome Web Store, in d
 
 The store assigns its own ID, which differs from the dev ID `agfkkmblbjjkcfecamfddhgjbflkookd`. The Google OAuth client must match the ID users actually install.
 
-- [ ] Dashboard → your item → **Package → View public key.** Copy the text between the BEGIN/END lines and remove the newlines.
-- [ ] Replace `"key"` in `manifest.json` with it. Reload the unpacked extension and confirm the ID on `chrome://extensions` matches the dashboard's Item ID.
+- [x] Dashboard → your item → **Package → View public key.** Copy the text between the BEGIN/END lines and remove the newlines.
+- [x] Replace `"key"` in `manifest.json` with it. Reload the unpacked extension and confirm the ID on `chrome://extensions` matches the dashboard's Item ID.
 - [ ] In Google Cloud → Google Auth Platform → **Clients**, edit the Chrome Extension client and change its **Item ID** to the new ID. The client ID string stays the same, so the manifest doesn't need to change.
 - [ ] Reload, **Reconnect Google Calendar**, and run a sync to confirm it still works. The old `key.pem` is no longer needed.
 - [ ] `npm run package` and upload the new zip.

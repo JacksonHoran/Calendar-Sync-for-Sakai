@@ -15,7 +15,7 @@ See `CLAUDE.md` for design decisions, `PLAN.md` for status, and `PUBLISHING.md` 
 
 1. Open `chrome://extensions` and turn on **Developer mode**.
 2. Click **Load unpacked** and pick this folder.
-3. The extension ID comes from the `key` in `manifest.json`, and the Google OAuth client is tied to it. The dev ID is `agfkkmblbjjkcfecamfddhgjbflkookd`. Once the extension is uploaded to the Web Store, the manifest key switches to the store's key and the ID changes to match (see `PUBLISHING.md`).
+3. The extension ID comes from the `key` in `manifest.json`, and the Google OAuth client is tied to it. The manifest carries the Chrome Web Store's public key, so the unpacked extension has the same ID as the store version: `kollljgmabpjghfimjdlinokikjbgebo`.
 
 ### 2. Google Cloud setup (one time, about 10 minutes)
 
