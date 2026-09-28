@@ -80,3 +80,7 @@ To cut a release: bump `version` in `manifest.json`, commit, then `git tag v<ver
 | `/direct/site.json` | ✅ works | Used for course names, because some sites have UUID ids instead of course codes. |
 | Samigo (tests/quizzes) | not yet probed | |
 | Calendar / Schedule | not yet probed | |
+
+## License
+
+[MIT](LICENSE)

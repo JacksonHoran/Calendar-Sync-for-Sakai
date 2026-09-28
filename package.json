@@ -1,6 +1,7 @@
 {
   "name": "calendar-sync-for-sakai",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "lint": "eslint .",
