@@ -23,8 +23,8 @@ Everything needed to go from "works on my machine" to the Chrome Web Store, in d
 ## 2. Homepage and privacy policy (GitHub Pages)
 
 - [x] GitHub repo: `JacksonHoran/Calendar-Sync-for-Sakai`. It must be public for free GitHub Pages.
-- [ ] Repo **Settings → Pages →** Source: deploy from branch `main`, folder **`/docs`**.
-- [ ] Confirm `https://jacksonhoran.github.io/Calendar-Sync-for-Sakai/` and `.../privacy.html` load.
+- [x] Repo **Settings → Pages →** Source: deploy from branch `main`, folder **`/docs`**.
+- [x] Confirm `https://jacksonhoran.github.io/Calendar-Sync-for-Sakai/` and `.../privacy.html` load.
 - [ ] **Verify the domain** in [Google Search Console](https://search.google.com/search-console): add `https://jacksonhoran.github.io/` as a URL-prefix property and verify with the HTML meta tag. Google OAuth verification requires this.
 
 ## 3. Chrome Web Store: first upload (draft only)
