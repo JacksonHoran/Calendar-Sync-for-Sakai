@@ -40,6 +40,7 @@ src/
   badge.js        badge per state
   config.js       URLs, calendar name, skip patterns, event duration, reminders
 popup/            status UI: Connect/Reconnect, Sync now, Open Sakai, Open in Google Calendar, "Syncing to <email>"
+  status-text.js  PURE: status headline + detail line (unit-tested in test/popup.test.js)
 test/             node:test unit tests for normalize.js and events.js, redacted fixture in test/fixtures/
 ```
 

@@ -1,5 +1,6 @@
 import { SAKAI_BASE_URL, SYNC_STALE_AFTER_MS } from "../src/config.js";
 import { State, getStatus, getGoogleConnected, getCalendarId } from "../src/storage.js";
+import { describeStatus } from "./status-text.js";
 
 const el = {
   status: document.getElementById("status"),
@@ -20,25 +21,6 @@ function calendarUrl(calendarId, account) {
   return `https://calendar.google.com/calendar/r?${params}`;
 }
 
-const MESSAGES = {
-  [State.NEVER_SYNCED]: "Not synced yet",
-  [State.SYNCING]: "Syncing…",
-  [State.OK]: "Up to date",
-  [State.SAKAI_LOGGED_OUT]: "Log into Sakai to sync",
-  [State.GOOGLE_AUTH_NEEDED]: "Connect Google Calendar to start syncing",
-  [State.ERROR]: "Sync failed",
-};
-
-function timeAgo(ms) {
-  if (!ms) return "never";
-  const minutes = Math.round((Date.now() - ms) / 60000);
-  if (minutes < 1) return "just now";
-  if (minutes < 60) return `${minutes} min ago`;
-  const hours = Math.round(minutes / 60);
-  if (hours < 24) return `${hours} hr ago`;
-  return new Date(ms).toLocaleString();
-}
-
 async function render() {
   const [status, googleConnected, calendarId] = await Promise.all([
     getStatus(),
@@ -51,18 +33,10 @@ async function render() {
   const syncing = status.state === State.SYNCING && Date.now() - (status.lastAttempt ?? 0) < SYNC_STALE_AFTER_MS;
   const interrupted = status.state === State.SYNCING && !syncing;
 
-  el.status.dataset.state = interrupted ? State.ERROR : status.state;
-  el.text.textContent = interrupted ? "Last sync was interrupted" : MESSAGES[status.state] ?? status.state;
-
-  const details = [];
-  if (status.itemCount) details.push(`${status.itemCount} items on your calendar`);
-  const changes = status.lastChanges;
-  if (status.state === State.OK && changes && changes.created + changes.updated + changes.removed > 0) {
-    details.push(`last sync: +${changes.created} new, ${changes.updated} updated, ${changes.removed} removed`);
-  }
-  if (status.lastError && status.state !== State.OK) details.push(status.lastError);
-  details.push(`Last successful sync: ${timeAgo(status.lastSuccess)}`);
-  el.detail.textContent = details.join(" · ");
+  const { state, text, detail } = describeStatus(status, { syncing, interrupted, googleConnected });
+  el.status.dataset.state = state;
+  el.text.textContent = text;
+  el.detail.textContent = detail;
 
   el.connect.hidden = googleConnected && status.state !== State.GOOGLE_AUTH_NEEDED;
   el.connect.textContent = googleConnected ? "Reconnect Google Calendar" : "Connect Google Calendar";
