@@ -1,0 +1,82 @@
+:root {
+  --bg: #ffffff;
+  --fg: #1f2937;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --accent: #7c1d1d; /* Loyola maroon */
+  --accent-fg: #ffffff;
+  --ok: #15803d;
+  --warn: #b45309;
+  --err: #b91c1c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1f2023;
+    --fg: #e5e7eb;
+    --muted: #9ca3af;
+    --border: #374151;
+    --accent: #b8474a;
+    --ok: #4ade80;
+    --warn: #fbbf24;
+    --err: #f87171;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 14px 16px 16px;
+  width: 300px;
+  font: 13px/1.4 system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.status {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--muted);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+}
+.status p { margin: 0; }
+.status .detail { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.status[data-state="ok"] { border-left-color: var(--ok); }
+.status[data-state="sakai_logged_out"] { border-left-color: var(--warn); }
+.status[data-state="google_auth_needed"],
+.status[data-state="error"] { border-left-color: var(--err); }
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+button {
+  font: inherit;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+  cursor: pointer;
+}
+button.secondary {
+  background: transparent;
+  color: var(--fg);
+  border-color: var(--border);
+}
+button:disabled { opacity: 0.6; cursor: default; }

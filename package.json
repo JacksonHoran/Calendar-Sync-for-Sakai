@@ -1,0 +1,9 @@
+{
+  "name": "calendar-sync-for-sakai",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "package": "scripts/package.sh"
+  }
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Calendar Sync for Sakai</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <img src="../icons/icon32.png" alt="" width="20" height="20" />
+      <h1>Calendar Sync for Sakai</h1>
+    </header>
+
+    <section id="status" class="status" data-state="never_synced">
+      <p id="status-text">Loading…</p>
+      <p id="status-detail" class="detail"></p>
+      <p id="account" class="detail" hidden></p>
+    </section>
+
+    <div class="actions">
+      <button id="connect" hidden>Connect Google Calendar</button>
+      <button id="open-sakai" hidden>Open Sakai</button>
+      <button id="open-calendar" class="secondary" hidden>Open in Google Calendar</button>
+      <button id="sync-now" class="secondary">Sync now</button>
+    </div>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

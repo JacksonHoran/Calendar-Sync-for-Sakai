@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Policy – Calendar Sync for Sakai</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <p><a href="./">← Calendar Sync for Sakai</a></p>
+  <h1>Privacy Policy</h1>
+  <p class="meta">Last updated: September 28, 2026</p>
+
+  <p>Calendar Sync for Sakai ("the extension") is a Chrome extension that copies assignment due dates from Loyola University Chicago's Sakai site into a Google Calendar that the extension creates for you. This policy explains what data the extension handles and what it does with that data.</p>
+
+  <h2>Summary</h2>
+  <ul>
+    <li>The extension has <strong>no server</strong>. All processing happens inside your own Chrome browser.</li>
+    <li>Your data moves in one direction only: from Sakai to your own Google Calendar.</li>
+    <li>The developer never receives, stores, or sees your data. Nothing is sold, shared, or used for advertising or analytics.</li>
+  </ul>
+
+  <h2>Data the extension reads</h2>
+  <h3>From Sakai (sakai.luc.edu)</h3>
+  <p>Using the Sakai login you already have in Chrome, the extension reads:</p>
+  <ul>
+    <li>Your assignments: title, due date, course site, whether you have submitted, and an internal assignment ID.</li>
+    <li>The titles of your course sites, to label events (for example "COMP 371").</li>
+    <li>Whether you are currently logged in, to show a reminder badge when you need to log back in.</li>
+  </ul>
+  <p>The Sakai responses also contain other information, such as grades and instructor feedback. The extension ignores it. It is never stored or sent anywhere.</p>
+
+  <h3>From your Google account</h3>
+  <p>With your permission, the extension uses Google's OAuth sign-in built into Chrome and requests two permissions:</p>
+  <ul>
+    <li><code>calendar.app.created</code>: to create a calendar named "Sakai Assignments" and to create, update, and delete events <em>on that calendar only</em>. The extension cannot read or change your other calendars' events.</li>
+    <li><code>calendar.calendarlist</code>: to add the "Sakai Assignments" calendar to your calendar list and make it visible, one time. This permission lets the extension see the names of the calendars in your list. It does not use, store, or transmit that information.</li>
+  </ul>
+  <p>The extension also reads the email address Google records as the creator of the events it makes, and shows it in the extension popup so you know which Google account is being synced.</p>
+
+  <h2>Data the extension stores</h2>
+  <p>Only in your browser's local extension storage (<code>chrome.storage</code>), on your device:</p>
+  <ul>
+    <li>The ID of the "Sakai Assignments" calendar.</li>
+    <li>Sync status: last sync time, number of items, last error message, and the email of the synced Google account.</li>
+  </ul>
+  <p>Chrome manages the Google access token. The extension does not store it anywhere else. The assignment details themselves are stored only as events in your own Google Calendar.</p>
+
+  <h2>Data sharing</h2>
+  <p>The extension sends assignment information to one place: the Google Calendar API, so it can create events in your own calendar. It does not send data to the developer or any other third party. The developer does not operate any server, database, or analytics service for this extension.</p>
+
+  <h2>Google API Services User Data Policy</h2>
+  <p>Calendar Sync for Sakai's use and transfer of information received from Google APIs will adhere to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
+
+  <h2>Removing your data</h2>
+  <ul>
+    <li><strong>Stop syncing:</strong> remove the extension from Chrome (<code>chrome://extensions</code>). This deletes its local storage.</li>
+    <li><strong>Delete synced events:</strong> delete the "Sakai Assignments" calendar in Google Calendar settings.</li>
+    <li><strong>Revoke Google access:</strong> go to <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a> and remove Calendar Sync for Sakai.</li>
+  </ul>
+
+  <h2>Children</h2>
+  <p>The extension is intended for university students and is not directed at children under 13.</p>
+
+  <h2>Changes</h2>
+  <p>If this policy changes, the updated version will be posted on this page with a new "Last updated" date.</p>
+
+  <h2>Contact</h2>
+  <p>Questions: <a href="mailto:CONTACT_EMAIL">CONTACT_EMAIL</a></p>
+
+  <p class="meta">Calendar Sync for Sakai is an independent student project. It is not affiliated with or endorsed by Loyola University Chicago, the Apereo Foundation (Sakai), or Google.</p>
+</main>
+</body>
+</html>

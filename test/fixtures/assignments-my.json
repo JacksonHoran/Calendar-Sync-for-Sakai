@@ -1,0 +1,90 @@
+[
+  {
+    "_note": "Old, closed assignment from a past term. Should be dropped by the date window.",
+    "id": "1b65800c-6574-4e74-8f08-ae38a8fa31d3",
+    "title": "Homework #7",
+    "context": "COMP_141_003_3540_1242",
+    "status": "CLOSED",
+    "draft": false,
+    "access": "SITE",
+    "dueTime": { "epochSecond": 1714366800, "nano": 0 },
+    "submissions": [{ "userSubmission": true, "dateSubmittedEpochSeconds": 1714170955 }]
+  },
+  {
+    "_note": "Upcoming, not yet submitted. Course-code site id.",
+    "id": "639fcbac-fbd2-4539-bed5-d494ce2dfcb3",
+    "title": "Project 2a F26",
+    "context": "COMP_371_001_2706_1266",
+    "status": "OPEN",
+    "draft": false,
+    "access": "SITE",
+    "dueTime": { "epochSecond": 1790657700, "nano": 0 },
+    "submissions": [{ "userSubmission": false, "dateSubmittedEpochSeconds": null }]
+  },
+  {
+    "_note": "Upcoming, already submitted.",
+    "id": "0f3c0137-39b1-4781-a16c-c83d374583e5",
+    "title": "RR 5 Hut, Uji, Capt Naruto",
+    "context": "LITR_245_06W_3055_1266",
+    "status": "DUE",
+    "draft": false,
+    "access": "SITE",
+    "dueTime": { "epochSecond": 1790197200, "nano": 0 },
+    "submissions": [{ "userSubmission": true, "dateSubmittedEpochSeconds": 1790191277 }]
+  },
+  {
+    "_note": "Upcoming, submissions is null (seen on NON_ELECTRONIC items).",
+    "id": "1c5bd1cc-1284-47ed-a557-8e1cca20b13f",
+    "title": "Perspective Drawing ",
+    "context": "FNAR_113_104_6304_1266",
+    "status": "OPEN",
+    "draft": false,
+    "access": "SITE",
+    "dueTime": { "epochSecond": 1793291400, "nano": 0 },
+    "submissions": null
+  },
+  {
+    "_note": "HTML entity in title, UUID site id (course code only available via site.json). Due ~14 days before now in tests (inside the window).",
+    "id": "bbdc8880-155f-4643-883b-b0f79da730d6",
+    "title": "Week 04 - Newton &amp; Recursion",
+    "context": "26c72234-b572-45d9-b2ee-4a8ba7e7214e",
+    "status": "CLOSED",
+    "draft": false,
+    "access": "SITE",
+    "dueTime": { "epochSecond": 1789164000, "nano": 0 },
+    "submissions": [{ "userSubmission": true, "dateSubmittedEpochSeconds": 1790362481 }]
+  },
+  {
+    "_note": "Late pass placeholder. Skipped via skipTitles.",
+    "id": "c791a24b-c273-432a-962a-11887f1edb2d",
+    "title": "Late Pass 2",
+    "context": "COMP_371_001_2706_1266",
+    "status": "OPEN",
+    "draft": false,
+    "access": "SITE",
+    "dueTime": { "epochSecond": 1796450100, "nano": 0 },
+    "submissions": null
+  },
+  {
+    "_note": "Synthetic: draft assignment. Should be skipped.",
+    "id": "00000000-0000-0000-0000-000000000001",
+    "title": "Unpublished draft",
+    "context": "COMP_371_001_2706_1266",
+    "status": "DRAFT",
+    "draft": true,
+    "access": "SITE",
+    "dueTime": { "epochSecond": 1795000000, "nano": 0 },
+    "submissions": null
+  },
+  {
+    "_note": "Synthetic: no due time. Should be skipped.",
+    "id": "00000000-0000-0000-0000-000000000002",
+    "title": "No due date",
+    "context": "COMP_371_001_2706_1266",
+    "status": "OPEN",
+    "draft": false,
+    "access": "SITE",
+    "dueTime": null,
+    "submissions": null
+  }
+]

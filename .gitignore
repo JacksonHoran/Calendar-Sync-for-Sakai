@@ -1,0 +1,8 @@
+# Private key that pins the extension ID. Never commit or share it.
+key.pem
+
+node_modules/
+*.zip
+*.crx
+.DS_Store
+dist/

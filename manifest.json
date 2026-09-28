@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "Calendar Sync for Sakai",
+  "description": "Automatically keeps your Loyola Sakai assignment due dates in a dedicated Google Calendar.",
+  "version": "0.1.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0KZCxauh0VutG6sdZXcZyz3y1Qw47kgpAzPTLzQHLWcu/8p36adGi4jaDgtIqol5xLdAMEqQjry6EQwhQVVZS4v6trgRtiFGj1PecwFn9y5H5VTir7pC2dWCCrFCcWKA4cx/Jg5S9Xv2GAx9fhMTAZ2MU2ZmCSgvUfNTNXgyidHdVfrcA1t+bMCyiwpWRmegCkLhY5mxCM4ke10aP4+Cv5flBDbOq5Z8etIDJqNkxrCrIKV35G/0Eo+xQRXO3qf8pe7Q4qNFmyEJIBviNE+WQAqeR0UeFjv90rlqfSJ8QfAV+FhLMZFxFTAG2d6MVC4TErz1izvVNxJQ1QqYG2AvJwIDAQAB",
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Calendar Sync for Sakai",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["identity", "storage", "alarms"],
+  "host_permissions": [
+    "https://sakai.luc.edu/*",
+    "https://www.googleapis.com/*"
+  ],
+  "oauth2": {
+    "client_id": "877608769179-hek875lrt805v6ie9fmssspe5qkdbrgb.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/calendar.app.created",
+      "https://www.googleapis.com/auth/calendar.calendarlist"
+    ]
+  }
+}
