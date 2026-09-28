@@ -6,3 +6,5 @@ node_modules/
 *.crx
 .DS_Store
 dist/
+*.mov
+*.mp4
