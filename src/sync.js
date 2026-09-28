@@ -47,6 +47,7 @@ async function loadSiteTitles() {
 }
 
 async function fetchSakaiItems() {
+  console.log("[sync] checking Sakai session");
   await checkSession();
   const [rawAssignments, siteTitles] = await Promise.all([fetchAssignments(), loadSiteTitles()]);
   const items = normalizeAssignments(rawAssignments, {
@@ -61,6 +62,7 @@ async function fetchSakaiItems() {
 // Google Calendar is the source of truth for what's already synced: every event we create
 // carries its Sakai key in extendedProperties, so a reinstall can't produce duplicates.
 async function writeToCalendar(items) {
+  console.log("[sync] writing to Google Calendar");
   const calendarId = await ensureCalendar();
   await ensureCalendarListed(calendarId);
   const events = await listEvents(calendarId);

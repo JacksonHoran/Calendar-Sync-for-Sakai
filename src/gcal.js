@@ -1,4 +1,4 @@
-import { CALENDAR_NAME, CALENDAR_DESCRIPTION } from "./config.js";
+import { CALENDAR_NAME, CALENDAR_DESCRIPTION, REQUEST_TIMEOUT_MS } from "./config.js";
 import { getCalendarId, setCalendarId, getListedCalendarId, setListedCalendarId } from "./storage.js";
 
 const API = "https://www.googleapis.com/calendar/v3";
@@ -65,6 +65,7 @@ async function api(path, { method = "GET", body } = {}) {
       method,
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       body: body ? JSON.stringify(body) : undefined,
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
 
     if (res.status === 204) return null;

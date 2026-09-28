@@ -9,6 +9,10 @@ export const SKIP_TITLE_PATTERNS = [/^late pass\b/i];
 export const SYNC_ALARM = "sync";
 export const SYNC_PERIOD_MINUTES = 60;
 
+// Any single Sakai or Google request that takes longer than this is abandoned, so a hung
+// request can't stall the whole sync.
+export const REQUEST_TIMEOUT_MS = 20 * 1000;
+
 // A sync that hasn't finished in this long is assumed dead (service worker killed mid-run).
 export const SYNC_LOCK_TTL_MS = 5 * 60 * 1000;
 

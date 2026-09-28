@@ -1,4 +1,4 @@
-import { SAKAI_BASE_URL } from "../src/config.js";
+import { SAKAI_BASE_URL, SYNC_LOCK_TTL_MS } from "../src/config.js";
 import { State, getStatus, getGoogleConnected, getCalendarId } from "../src/storage.js";
 
 const el = {
@@ -46,8 +46,13 @@ async function render() {
     getCalendarId(),
   ]);
 
-  el.status.dataset.state = status.state;
-  el.text.textContent = MESSAGES[status.state] ?? status.state;
+  // A "syncing" status older than the lock TTL means the service worker died mid-sync and
+  // never recorded a result. Don't leave the user stuck with a disabled button.
+  const syncing = status.state === State.SYNCING && Date.now() - (status.lastAttempt ?? 0) < SYNC_LOCK_TTL_MS;
+  const interrupted = status.state === State.SYNCING && !syncing;
+
+  el.status.dataset.state = interrupted ? State.ERROR : status.state;
+  el.text.textContent = interrupted ? "Last sync was interrupted" : MESSAGES[status.state] ?? status.state;
 
   const details = [];
   if (status.itemCount) details.push(`${status.itemCount} items on your calendar`);
@@ -62,7 +67,7 @@ async function render() {
   el.connect.hidden = googleConnected && status.state !== State.GOOGLE_AUTH_NEEDED;
   el.connect.textContent = googleConnected ? "Reconnect Google Calendar" : "Connect Google Calendar";
   el.openSakai.hidden = status.state !== State.SAKAI_LOGGED_OUT;
-  el.syncNow.disabled = status.state === State.SYNCING;
+  el.syncNow.disabled = syncing;
 
   el.account.hidden = !status.googleAccount;
   el.account.textContent = `Syncing to ${status.googleAccount}`;

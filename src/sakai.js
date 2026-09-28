@@ -1,4 +1,4 @@
-import { SAKAI_BASE_URL } from "./config.js";
+import { SAKAI_BASE_URL, REQUEST_TIMEOUT_MS } from "./config.js";
 
 export class SakaiLoggedOutError extends Error {
   constructor(detail) {
@@ -19,11 +19,21 @@ const LOGIN_URL_PATTERN = /login|relogin|shibboleth|idp|sso|cas\//i;
 
 // Fetches a Sakai /direct endpoint with the user's session cookies. An expired session
 // shows up as a redirect to a login page, an auth error, or an HTML body instead of JSON.
+// no-store matters: a cached "logged in" response would hide an expired session.
 async function fetchJson(path) {
-  const res = await fetch(SAKAI_BASE_URL + path, {
-    credentials: "include",
-    headers: { Accept: "application/json" },
-  });
+  let res;
+  try {
+    res = await fetch(SAKAI_BASE_URL + path, {
+      credentials: "include",
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
+  } catch (e) {
+    if (e.name === "TimeoutError") throw new Error(`Sakai didn't respond within ${REQUEST_TIMEOUT_MS / 1000}s (${path})`);
+    throw e;
+  }
+  console.log(`[sakai] ${path} -> ${res.status}${res.redirected ? ` (redirected to ${res.url})` : ""}`);
 
   if (res.status === 401 || res.status === 403) {
     throw new SakaiLoggedOutError(`HTTP ${res.status}`);
