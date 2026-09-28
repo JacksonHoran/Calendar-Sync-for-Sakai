@@ -91,22 +91,16 @@ async function api(path, { method = "GET", body } = {}) {
   }
 }
 
-const isGone = (e) => e instanceof GoogleApiError && (e.status === 404 || e.status === 410);
+export const isGone = (e) => e instanceof GoogleApiError && (e.status === 404 || e.status === 410);
 
-// Returns the id of the extension's calendar, creating it if it doesn't exist yet or the
-// user deleted it. calendar.app.created can't list other calendars, so the stored id is
-// the only way to find it again.
+// Returns the id of the extension's calendar, creating it if there isn't one yet. It doesn't
+// check that a stored calendar still exists (that would cost a request every sync); the
+// caller finds out when listing its events 404s, then calls forgetCalendar() and retries.
+// calendar.app.created can't list other calendars, so the stored id is the only way to find
+// our calendar again.
 export async function ensureCalendar() {
   const storedId = await getCalendarId();
-  if (storedId) {
-    try {
-      await api(`/calendars/${encodeURIComponent(storedId)}`);
-      return storedId;
-    } catch (e) {
-      if (!isGone(e)) throw e;
-      console.log("[gcal] stored calendar is gone, creating a new one");
-    }
-  }
+  if (storedId) return storedId;
 
   const calendar = await api("/calendars", {
     method: "POST",
@@ -118,6 +112,11 @@ export async function ensureCalendar() {
   });
   await setCalendarId(calendar.id);
   return calendar.id;
+}
+
+// Called when the stored calendar turned out to be deleted.
+export async function forgetCalendar() {
+  await setCalendarId(null);
 }
 
 // A calendar created through the API isn't necessarily in the user's calendar list, and list
@@ -139,11 +138,16 @@ export async function ensureCalendarListed(calendarId) {
   await setListedCalendarId(calendarId);
 }
 
-export async function listEvents(calendarId) {
+// Only events ending after timeMin, and only the fields the sync uses, so each sync stays
+// the same size no matter how many past semesters the calendar holds.
+const EVENT_FIELDS = "items(id,end,extendedProperties/private,creator/email),nextPageToken";
+
+export async function listEvents(calendarId, { timeMin } = {}) {
   const events = [];
   let pageToken;
   do {
-    const params = new URLSearchParams({ maxResults: "2500", showDeleted: "false" });
+    const params = new URLSearchParams({ maxResults: "2500", showDeleted: "false", fields: EVENT_FIELDS });
+    if (timeMin) params.set("timeMin", new Date(timeMin).toISOString());
     if (pageToken) params.set("pageToken", pageToken);
     const page = await api(`/calendars/${encodeURIComponent(calendarId)}/events?${params}`);
     events.push(...(page.items ?? []));

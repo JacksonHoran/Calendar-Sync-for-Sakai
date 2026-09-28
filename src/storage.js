@@ -56,3 +56,23 @@ export async function getListedCalendarId() {
 export async function setListedCalendarId(listedCalendarId) {
   await chrome.storage.local.set({ listedCalendarId });
 }
+
+// Cached { fetchedAt, titles: { siteId: title } } from /direct/site.json.
+export async function getSiteTitleCache() {
+  const { siteTitleCache } = await chrome.storage.local.get("siteTitleCache");
+  return siteTitleCache ?? null;
+}
+
+export async function setSiteTitleCache(siteTitleCache) {
+  await chrome.storage.local.set({ siteTitleCache });
+}
+
+// Sakai key -> timestamp when its future event was first seen without a matching assignment.
+export async function getMissingSince() {
+  const { missingSince } = await chrome.storage.local.get("missingSince");
+  return missingSince ?? {};
+}
+
+export async function setMissingSince(missingSince) {
+  await chrome.storage.local.set({ missingSince });
+}

@@ -14,7 +14,7 @@ Everything needed to go from "works on my machine" to the Chrome Web Store, in d
 
 ## 1. Pre-flight testing
 
-- [ ] **Logged-out flow:** log out of Sakai (or let the session expire), click **Sync now**, and confirm the amber "!" badge and the "Log into Sakai to sync" message. Log back in and confirm the next sync clears it.
+- [x] **Logged-out flow:** log out of Sakai (or let the session expire), click **Sync now**, and confirm the amber "!" badge and the "Log into Sakai to sync" message. Log back in and confirm the next sync clears it.
 - [ ] **Hourly alarm:** leave Chrome open for over an hour. The popup's "Last successful sync" should advance on its own.
 - [ ] **Browser restart:** quit and reopen Chrome. It should sync on startup.
 - [ ] **Change detection:** if an instructor moves a due date, the event moves on the next sync.

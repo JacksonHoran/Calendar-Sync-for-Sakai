@@ -13,6 +13,18 @@ export const SYNC_PERIOD_MINUTES = 60;
 // request can't stall the whole sync.
 export const REQUEST_TIMEOUT_MS = 20 * 1000;
 
+// Course site titles rarely change, so they're cached. A sync still refetches early if an
+// assignment belongs to a site that isn't in the cache yet (e.g. a newly added course).
+export const SITE_TITLES_TTL_MS = 24 * 60 * 60 * 1000;
+
+// An event is only deleted once its assignment has been missing from Sakai for this long,
+// so a temporary Sakai glitch can't wipe the calendar.
+export const REMOVAL_GRACE_MS = 12 * 60 * 60 * 1000;
+
+// Minimum gap between syncs triggered by Sakai page loads while logged out. Kept short: the
+// login page itself is on sakai.luc.edu, and a long throttle could swallow the post-login load.
+export const LOGIN_SYNC_THROTTLE_MS = 5 * 1000;
+
 // A sync that hasn't finished in this long is assumed dead (service worker killed mid-run).
 export const SYNC_LOCK_TTL_MS = 5 * 60 * 1000;
 

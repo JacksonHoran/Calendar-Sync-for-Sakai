@@ -37,10 +37,16 @@ export function indexExistingEvents(events) {
   return { byKey, duplicates };
 }
 
-// Decides the minimal set of writes. Events for items that disappeared from Sakai are only
-// deleted if they're still in the future; past events drop out of Sakai's feed naturally
-// and should stay on the calendar as history.
-export function planSync(items, existing, { now = Date.now() } = {}) {
+// Decides the minimal set of writes.
+//
+// Deletion is deliberately conservative, because a glitchy Sakai response must never wipe the
+// calendar:
+// - Past events are never deleted. They drop out of Sakai's feed naturally and stay as history.
+// - A future event whose assignment is missing is only deleted after it has been missing for
+//   graceMs. `missingSince` (key -> first-missing timestamp) carries that across syncs, and the
+//   updated map is returned for the caller to persist.
+// - If Sakai returned no items at all, nothing is deleted and the timers don't advance.
+export function planSync(items, existing, { now = Date.now(), missingSince = {}, graceMs = 0 } = {}) {
   const create = [];
   const update = [];
   const remove = [...existing.duplicates];
@@ -53,9 +59,17 @@ export function planSync(items, existing, { now = Date.now() } = {}) {
     else if (current.hash !== item.hash) update.push({ eventId: current.eventId, item });
   }
 
-  for (const [key, entry] of existing.byKey) {
-    if (!seen.has(key) && entry.end && Date.parse(entry.end) > now) remove.push(entry.eventId);
+  if (items.length === 0) {
+    return { create, update, remove, missingSince };
   }
 
-  return { create, update, remove };
+  const nextMissingSince = {};
+  for (const [key, entry] of existing.byKey) {
+    if (seen.has(key) || !entry.end || Date.parse(entry.end) <= now) continue;
+    const since = missingSince[key] ?? now;
+    if (now - since >= graceMs) remove.push(entry.eventId);
+    else nextMissingSince[key] = since;
+  }
+
+  return { create, update, remove, missingSince: nextMissingSince };
 }

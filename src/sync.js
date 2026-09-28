@@ -4,21 +4,34 @@ import {
   SKIP_TITLE_PATTERNS,
   EVENT_DURATION_MINUTES,
   REMINDERS,
+  SITE_TITLES_TTL_MS,
+  REMOVAL_GRACE_MS,
 } from "./config.js";
 import { checkSession, fetchAssignments, fetchSites, SakaiLoggedOutError } from "./sakai.js";
-import { normalizeAssignments, siteTitleMap } from "./normalize.js";
+import { normalizeAssignments, siteTitleMap, PAST_WINDOW_DAYS } from "./normalize.js";
 import { buildEvent, indexExistingEvents, planSync } from "./events.js";
 import {
   GoogleAuthError,
   getToken,
   ensureCalendar,
+  forgetCalendar,
+  isGone,
   ensureCalendarListed,
   listEvents,
   insertEvent,
   updateEvent,
   deleteEvent,
 } from "./gcal.js";
-import { State, getStatus, updateStatus, getGoogleConnected } from "./storage.js";
+import {
+  State,
+  getStatus,
+  updateStatus,
+  getGoogleConnected,
+  getSiteTitleCache,
+  setSiteTitleCache,
+  getMissingSince,
+  setMissingSince,
+} from "./storage.js";
 import { showBadgeForState } from "./badge.js";
 
 // chrome.storage.session survives service worker restarts but not browser restarts,
@@ -34,22 +47,31 @@ async function releaseLock() {
   await chrome.storage.session.remove("syncLock");
 }
 
-// Site titles only improve event labels (e.g. for sites with UUID ids), so a failure here
-// shouldn't fail the sync.
-async function loadSiteTitles() {
+// Site titles only improve event labels (e.g. for sites with UUID ids), so they're cached for
+// a day and a failure here doesn't fail the sync. The cache is refreshed early if an assignment
+// belongs to a site it doesn't know yet (e.g. a newly added course).
+async function loadSiteTitles(siteIds) {
+  const cache = await getSiteTitleCache();
+  const fresh = cache && Date.now() - cache.fetchedAt < SITE_TITLES_TTL_MS;
+  if (fresh && siteIds.every((id) => id in cache.titles)) return cache.titles;
+
   try {
-    return siteTitleMap(await fetchSites());
+    const titles = siteTitleMap(await fetchSites());
+    await setSiteTitleCache({ fetchedAt: Date.now(), titles });
+    return titles;
   } catch (e) {
     if (e instanceof SakaiLoggedOutError) throw e;
     console.warn("[sync] could not load site titles:", e);
-    return {};
+    return cache?.titles ?? {};
   }
 }
 
 async function fetchSakaiItems() {
   console.log("[sync] checking Sakai session");
   await checkSession();
-  const [rawAssignments, siteTitles] = await Promise.all([fetchAssignments(), loadSiteTitles()]);
+  const rawAssignments = await fetchAssignments();
+  const siteIds = [...new Set(rawAssignments.map((a) => a.context).filter(Boolean))];
+  const siteTitles = await loadSiteTitles(siteIds);
   const items = normalizeAssignments(rawAssignments, {
     siteTitles,
     baseUrl: SAKAI_BASE_URL,
@@ -59,18 +81,36 @@ async function fetchSakaiItems() {
   return items;
 }
 
+// Lists our calendar's recent and future events, recreating the calendar if the user
+// deleted it. Events older than the Sakai window (plus a day of slack) can never change,
+// so they're not fetched.
+async function loadCalendarEvents() {
+  const timeMin = Date.now() - (PAST_WINDOW_DAYS + 1) * 24 * 60 * 60 * 1000;
+  let calendarId = await ensureCalendar();
+  try {
+    return { calendarId, events: await listEvents(calendarId, { timeMin }) };
+  } catch (e) {
+    if (!isGone(e)) throw e;
+    console.log("[sync] stored calendar is gone, creating a new one");
+    await forgetCalendar();
+    calendarId = await ensureCalendar();
+    return { calendarId, events: [] };
+  }
+}
+
 // Google Calendar is the source of truth for what's already synced: every event we create
 // carries its Sakai key in extendedProperties, so a reinstall can't produce duplicates.
 async function writeToCalendar(items) {
   console.log("[sync] writing to Google Calendar");
-  const calendarId = await ensureCalendar();
+  const { calendarId, events } = await loadCalendarEvents();
   await ensureCalendarListed(calendarId);
-  const events = await listEvents(calendarId);
   const existing = indexExistingEvents(events);
   // Google stamps each event with the account that created it, which tells the user which
   // account to look in without needing the identity.email permission.
   let account = events.find((e) => e.creator?.email)?.creator.email ?? null;
-  const plan = planSync(items, existing);
+  const plan = planSync(items, existing, { missingSince: await getMissingSince(), graceMs: REMOVAL_GRACE_MS });
+  const pending = Object.keys(plan.missingSince).length;
+  if (pending) console.log(`[sync] ${pending} event(s) missing from Sakai, waiting out the grace period`, plan.missingSince);
   const eventOptions = {
     durationMinutes: EVENT_DURATION_MINUTES,
     reminders: REMINDERS,
@@ -85,6 +125,7 @@ async function writeToCalendar(items) {
   }
   for (const { eventId, item } of plan.update) await updateEvent(calendarId, eventId, buildEvent(item, eventOptions));
   for (const eventId of plan.remove) await deleteEvent(calendarId, eventId);
+  await setMissingSince(plan.missingSince);
 
   return {
     account,

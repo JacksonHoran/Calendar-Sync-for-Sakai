@@ -78,5 +78,53 @@ test("planSync creates, updates, skips unchanged, and removes vanished future ev
 test("planSync is a no-op when everything matches", () => {
   const items = [item("a", "2026-10-01T00:00:00.000Z")];
   const existing = indexExistingEvents([apiEvent("e-a", "assignment:a", "h-a", "2026-10-01T00:00:00Z")]);
-  assert.deepEqual(planSync(items, existing, { now: NOW }), { create: [], update: [], remove: [] });
+  assert.deepEqual(planSync(items, existing, { now: NOW }), { create: [], update: [], remove: [], missingSince: {} });
+});
+
+const HOUR = 60 * 60 * 1000;
+const guarded = () => ({
+  items: [item("kept", "2026-10-01T00:00:00.000Z")],
+  existing: indexExistingEvents([
+    apiEvent("e-kept", "assignment:kept", "h-kept", "2026-10-01T00:00:00Z"),
+    apiEvent("e-gone", "assignment:gone", "x", "2026-10-10T00:00:00Z"),
+  ]),
+});
+
+test("planSync waits out the grace period before deleting", () => {
+  const { items, existing } = guarded();
+  const first = planSync(items, existing, { now: NOW, graceMs: 12 * HOUR });
+  assert.deepEqual(first.remove, []);
+  assert.deepEqual(first.missingSince, { "assignment:gone": NOW });
+
+  const later = planSync(items, existing, { now: NOW + 6 * HOUR, missingSince: first.missingSince, graceMs: 12 * HOUR });
+  assert.deepEqual(later.remove, []);
+  assert.deepEqual(later.missingSince, { "assignment:gone": NOW });
+
+  const done = planSync(items, existing, { now: NOW + 12 * HOUR, missingSince: first.missingSince, graceMs: 12 * HOUR });
+  assert.deepEqual(done.remove, ["e-gone"]);
+  assert.deepEqual(done.missingSince, {});
+});
+
+test("planSync resets the timer when the item comes back", () => {
+  const { existing } = guarded();
+  const back = [item("kept", "2026-10-01T00:00:00.000Z"), item("gone", "2026-10-10T00:00:00.000Z", { hash: "x" })];
+  const plan = planSync(back, existing, { now: NOW + 6 * HOUR, missingSince: { "assignment:gone": NOW }, graceMs: 12 * HOUR });
+  assert.deepEqual(plan.remove, []);
+  assert.deepEqual(plan.missingSince, {});
+});
+
+test("planSync never deletes when Sakai returns nothing", () => {
+  const { existing } = guarded();
+  const plan = planSync([], existing, { now: NOW + 48 * HOUR, missingSince: { "assignment:gone": NOW }, graceMs: 12 * HOUR });
+  assert.deepEqual(plan.remove, []);
+  assert.deepEqual(plan.missingSince, { "assignment:gone": NOW });
+});
+
+test("planSync still removes duplicates immediately", () => {
+  const existing = indexExistingEvents([
+    apiEvent("e1", "assignment:a", "h-a", "2026-10-01T00:00:00Z"),
+    apiEvent("e2", "assignment:a", "h-a", "2026-10-01T00:00:00Z"),
+  ]);
+  const plan = planSync([], existing, { now: NOW, graceMs: 12 * HOUR });
+  assert.deepEqual(plan.remove, ["e2"]);
 });
