@@ -9,7 +9,7 @@ Everything needed to go from "works on my machine" to the Chrome Web Store, in d
 ## 0. Decisions before you start
 
 - [x] **Listing name: "Calendar Sync for Sakai".** "Sakai" is a trademark of the Apereo Foundation, so the name uses the descriptive "for Sakai" form. It's already applied in the manifest, popup, `docs/`, and `src/config.js`. **Also rename the Google OAuth app** (Google Auth Platform → Branding) to match.
-- [ ] **Version.** Bump `manifest.json` → `version` to `1.0.0` for the first public release. Every later upload needs a higher version.
+- [ ] **Version.** Bump `manifest.json` → `version` to `1.0.0` for the first public release. Every later upload needs a higher version. Then tag it (`git tag v1.0.0 && git push --tags`), and the Release workflow builds the zip and attaches it to a GitHub release.
 - [x] **Contact email:** jacksonhoran1@gmail.com, filled into `docs/index.html` and `docs/privacy.html`.
 
 ## 1. Pre-flight testing

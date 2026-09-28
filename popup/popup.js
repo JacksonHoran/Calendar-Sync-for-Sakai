@@ -1,4 +1,4 @@
-import { SAKAI_BASE_URL, SYNC_LOCK_TTL_MS } from "../src/config.js";
+import { SAKAI_BASE_URL, SYNC_STALE_AFTER_MS } from "../src/config.js";
 import { State, getStatus, getGoogleConnected, getCalendarId } from "../src/storage.js";
 
 const el = {
@@ -48,7 +48,7 @@ async function render() {
 
   // A "syncing" status older than the lock TTL means the service worker died mid-sync and
   // never recorded a result. Don't leave the user stuck with a disabled button.
-  const syncing = status.state === State.SYNCING && Date.now() - (status.lastAttempt ?? 0) < SYNC_LOCK_TTL_MS;
+  const syncing = status.state === State.SYNCING && Date.now() - (status.lastAttempt ?? 0) < SYNC_STALE_AFTER_MS;
   const interrupted = status.state === State.SYNCING && !syncing;
 
   el.status.dataset.state = interrupted ? State.ERROR : status.state;

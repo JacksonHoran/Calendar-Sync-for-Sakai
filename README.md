@@ -42,25 +42,34 @@ Requirements and gotchas:
 - `bad client id` means the OAuth client's Item ID doesn't match the extension ID.
 - After adding a new scope to the manifest, reload the extension and click **Reconnect Google Calendar** to approve it.
 
-### 3. Tests
+### 3. Tests and checks
 
 ```bash
-npm test
+npm install        # dev tools only (ESLint); the extension itself has no dependencies
+npm run check      # lint + all tests, the same thing CI runs
 ```
 
-Unit tests cover Sakai → item normalization (`src/normalize.js`) and the event/diff logic (`src/events.js`) against the redacted fixture in `test/fixtures/`. **Never commit real Sakai responses.** They contain grades, feedback, and other people's contact info.
+- `test/normalize.test.js`, `test/events.test.js`: pure logic (Sakai → items, event building, sync planning and the delete safeguards).
+- `test/sync.test.js`: end-to-end `sync()` runs against in-memory fakes of Chrome (`test/helpers/chrome-mock.js`), Sakai, and Google Calendar (`test/helpers/fake-servers.js`). They cover idempotency, updates, grace-period deletes, logged-out detection, token refresh, rate limits, a deleted calendar, and concurrent syncs.
+- `test/manifest.test.js`: fails if a permission, host permission, or OAuth scope is added or removed. Update it deliberately when a permission change is intended.
+
+**Never commit real Sakai responses.** They contain grades, feedback, and other people's contact info. Fixtures must be hand-redacted.
+
+**CI** (`.github/workflows/ci.yml`) runs lint, tests, and a package build on every push to `main` and every PR. The built zip is attached to each run as an artifact.
 
 ### 4. Debugging
 
 On `chrome://extensions`, click **service worker** under the extension to open its console. Every sync logs `[sync]` lines, including the normalized items and the create/update/remove counts.
 
-### 5. Packaging for the Web Store
+### 5. Packaging and releases
 
 ```bash
 npm run package
 ```
 
-This builds `dist/calendar-sync-for-sakai-<version>.zip` containing only the files the extension needs, with the dev-only `key` field stripped.
+This builds `dist/calendar-sync-for-sakai-<version>.zip` containing only runtime files, with the dev-only `key` field stripped. It fails if the zip contains a `key` field or non-runtime files.
+
+To cut a release: bump `version` in `manifest.json`, commit, then `git tag v<version> && git push --tags`. The Release workflow checks that the tag matches the manifest, runs all checks, and attaches the zip to a GitHub release. Uploading to the Web Store stays manual.
 
 ## Sakai endpoints (sakai.luc.edu)
 

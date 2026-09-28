@@ -1,6 +1,5 @@
 import {
   SAKAI_BASE_URL,
-  SYNC_LOCK_TTL_MS,
   SKIP_TITLE_PATTERNS,
   EVENT_DURATION_MINUTES,
   REMINDERS,
@@ -24,7 +23,6 @@ import {
 } from "./gcal.js";
 import {
   State,
-  getStatus,
   updateStatus,
   getGoogleConnected,
   getSiteTitleCache,
@@ -34,17 +32,18 @@ import {
 } from "./storage.js";
 import { showBadgeForState } from "./badge.js";
 
-// chrome.storage.session survives service worker restarts but not browser restarts,
-// which is the right lifetime for a lock.
-async function acquireLock() {
-  const { syncLock } = await chrome.storage.session.get("syncLock");
-  if (syncLock && Date.now() - syncLock < SYNC_LOCK_TTL_MS) return false;
-  await chrome.storage.session.set({ syncLock: Date.now() });
-  return true;
-}
+// Every sync runs in this one service worker, so an in-memory promise is an atomic lock:
+// a sync requested while one is running (e.g. startup + a Sakai page load) waits for and
+// shares the running one's result. A storage-based lock can race (two callers both read
+// "unlocked" before either writes), which created duplicate calendars and events. If the
+// worker is killed mid-sync, the lock dies with it, which is correct.
+let running = null;
 
-async function releaseLock() {
-  await chrome.storage.session.remove("syncLock");
+export function sync(options) {
+  running ??= runSync(options).finally(() => {
+    running = null;
+  });
+  return running;
 }
 
 // Site titles only improve event labels (e.g. for sites with UUID ids), so they're cached for
@@ -133,12 +132,7 @@ async function writeToCalendar(items) {
   };
 }
 
-export async function sync({ reason }) {
-  if (!(await acquireLock())) {
-    console.log(`[sync] skipped (${reason}): already running`);
-    return getStatus();
-  }
-
+async function runSync({ reason }) {
   console.log(`[sync] start (${reason})`);
   await updateStatus({ state: State.SYNCING, lastAttempt: Date.now() });
 
@@ -169,8 +163,6 @@ export async function sync({ reason }) {
       : e instanceof GoogleAuthError ? State.GOOGLE_AUTH_NEEDED
       : State.ERROR;
     status = await updateStatus({ state, lastError: e.message });
-  } finally {
-    await releaseLock();
   }
 
   await showBadgeForState(status.state);

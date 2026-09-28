@@ -44,7 +44,11 @@ test/             node:test unit tests for normalize.js and events.js, redacted 
 ```
 
 ## Conventions
-- Plain ES modules, **no build step, no dependencies**. `npm test` runs `node --test`.
+- Plain ES modules, **no build step, no runtime dependencies**. Dev-only tooling (ESLint) lives in `devDependencies` and never ships.
+- **`npm run check` (lint + tests) must pass before committing.** CI (`.github/workflows/ci.yml`) runs the same on every push/PR, plus `npm run package`.
+- Tests: pure-logic unit tests, end-to-end `sync()` tests against in-memory fakes (`test/helpers/`), and a manifest guard. When changing sync behavior, add or adjust a case in `test/sync.test.js`. When adding a Chrome API call, extend `test/helpers/chrome-mock.js`.
+- `test/manifest.test.js` pins permissions and OAuth scopes. Changing them is a deliberate product decision (it forces user re-approval and store/OAuth re-review), never a side effect.
+- **Sync concurrency** is guarded by an in-memory promise in `sync.js` (all syncs run in the one service worker). Don't reintroduce a storage-based lock: it raced and created duplicate calendars and events.
 - Keep `normalize.js` and `events.js` free of `chrome.*` and network calls so they stay unit-testable.
 - **Never commit real Sakai responses.** They contain grades, instructor feedback, names, and other people's contact info. Fixtures must be hand-redacted.
 - Never commit `key.pem`.

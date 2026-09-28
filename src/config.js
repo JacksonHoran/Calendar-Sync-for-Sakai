@@ -25,8 +25,9 @@ export const REMOVAL_GRACE_MS = 12 * 60 * 60 * 1000;
 // login page itself is on sakai.luc.edu, and a long throttle could swallow the post-login load.
 export const LOGIN_SYNC_THROTTLE_MS = 5 * 1000;
 
-// A sync that hasn't finished in this long is assumed dead (service worker killed mid-run).
-export const SYNC_LOCK_TTL_MS = 5 * 60 * 1000;
+// A "syncing" status older than this means the service worker was killed mid-sync; the popup
+// shows it as interrupted instead of leaving Sync now disabled.
+export const SYNC_STALE_AFTER_MS = 5 * 60 * 1000;
 
 // Events are timed blocks that end at the due time.
 export const EVENT_DURATION_MINUTES = 30;

@@ -34,6 +34,12 @@ Status tracker for the build. `CLAUDE.md` has the decisions and architecture, an
 - Sync-on-login via `tabs.onUpdated` (no new permission).
 - Not done: concurrent event writes (only speeds up the very first sync).
 
+## Testing and CI (2026-09-28)
+- 39 tests: pure logic, end-to-end `sync()` against in-memory Chrome/Sakai/Google fakes, and a manifest permission guard.
+- ESLint (dev-only). GitHub Actions CI runs lint, tests, and a package build on push/PR. Pushing a `v*` tag builds a GitHub release with the zip.
+- The concurrency test caught a real race (the storage-based lock let two syncs create duplicate calendars and events), now fixed with an in-memory lock.
+- Not covered by automation: real Chrome, real Sakai, real Google. The manual pre-flight list in `PUBLISHING.md` covers those before each release.
+
 ## Later ideas
 - Samigo quizzes/tests, and exam dates from the course Schedule tool (or its iCal feed).
 - Settings page: reminder times, all-day vs. timed, which courses and item types to sync.

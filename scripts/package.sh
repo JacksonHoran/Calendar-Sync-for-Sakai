@@ -28,5 +28,15 @@ out="dist/calendar-sync-for-sakai-$version.zip"
 rm -f "$out"
 (cd "$staging" && zip -qr -X - .) > "$out"
 
+# Sanity-check the result so CI fails on a bad package.
+if unzip -p "$out" manifest.json | grep -q '"key"'; then
+  echo "error: packaged manifest still contains a key field" >&2
+  exit 1
+fi
+if unzip -l "$out" | grep -Eq ' (test/|docs/|scripts/|node_modules/|key\.pem)'; then
+  echo "error: package contains non-runtime files" >&2
+  exit 1
+fi
+
 echo "Built $out"
 unzip -l "$out"

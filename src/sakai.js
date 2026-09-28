@@ -30,7 +30,7 @@ async function fetchJson(path) {
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
   } catch (e) {
-    if (e.name === "TimeoutError") throw new Error(`Sakai didn't respond within ${REQUEST_TIMEOUT_MS / 1000}s (${path})`);
+    if (e.name === "TimeoutError") throw new Error(`Sakai didn't respond within ${REQUEST_TIMEOUT_MS / 1000}s (${path})`, { cause: e });
     throw e;
   }
   console.log(`[sakai] ${path} -> ${res.status}${res.redirected ? ` (redirected to ${res.url})` : ""}`);
