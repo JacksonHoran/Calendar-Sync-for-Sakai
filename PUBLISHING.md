@@ -10,7 +10,7 @@ Everything needed to go from "works on my machine" to the Chrome Web Store, in d
 
 - [x] **Listing name: "Calendar Sync for Sakai".** "Sakai" is a trademark of the Apereo Foundation, so the name uses the descriptive "for Sakai" form. It's already applied in the manifest, popup, `docs/`, and `src/config.js`. **Also rename the Google OAuth app** (Google Auth Platform → Branding) to match.
 - [ ] **Version.** Bump `manifest.json` → `version` to `1.0.0` for the first public release. Every later upload needs a higher version.
-- [ ] **Contact email.** Replace `CONTACT_EMAIL` in `docs/index.html` and `docs/privacy.html`. It will be public. A dedicated address is fine.
+- [x] **Contact email:** jacksonhoran1@gmail.com, filled into `docs/index.html` and `docs/privacy.html`.
 
 ## 1. Pre-flight testing
 
@@ -22,10 +22,10 @@ Everything needed to go from "works on my machine" to the Chrome Web Store, in d
 
 ## 2. Homepage and privacy policy (GitHub Pages)
 
-- [ ] Create a GitHub repo (public is simplest for Pages) and push this project. `key.pem`, `dist/`, and real Sakai data are gitignored or never committed.
+- [x] GitHub repo: `JacksonHoran/Calendar-Sync-for-Sakai`. It must be public for free GitHub Pages.
 - [ ] Repo **Settings → Pages →** Source: deploy from branch `main`, folder **`/docs`**.
-- [ ] Confirm `https://<username>.github.io/<repo>/` and `.../privacy.html` load.
-- [ ] **Verify the domain** in [Google Search Console](https://search.google.com/search-console): add `https://<username>.github.io/` as a URL-prefix property and verify with the HTML meta tag. Google OAuth verification requires this.
+- [ ] Confirm `https://jacksonhoran.github.io/Calendar-Sync-for-Sakai/` and `.../privacy.html` load.
+- [ ] **Verify the domain** in [Google Search Console](https://search.google.com/search-console): add `https://jacksonhoran.github.io/` as a URL-prefix property and verify with the HTML meta tag. Google OAuth verification requires this.
 
 ## 3. Chrome Web Store: first upload (draft only)
 
@@ -56,7 +56,7 @@ The store assigns its own ID, which differs from the dev ID `agfkkmblbjjkcfecamf
 
 - [ ] **Store listing tab:** description (Appendix A), category **Workflow & Planning**, language English.
 - [ ] **Graphics:** the store icon is 128×128 (`icons/icon128.png`, though a more polished version is worth making), at least one **1280×800** screenshot, and a **440×280** small promo tile. Good screenshots: the popup showing "Up to date · Syncing to …", and Google Calendar week view with the Sakai Assignments events.
-- [ ] **Privacy practices tab:** single purpose, permission justifications, and data usage (Appendices B and C). Privacy policy URL: `https://<username>.github.io/<repo>/privacy.html`.
+- [ ] **Privacy practices tab:** single purpose, permission justifications, and data usage (Appendices B and C). Privacy policy URL: `https://jacksonhoran.github.io/Calendar-Sync-for-Sakai/privacy.html`.
 - [ ] **Distribution:** Visibility **Unlisted** for the pilot, then Public.
 - [ ] **Submit for review.** Reviews usually take a few days. Narrow host permissions (only `sakai.luc.edu`) and no remote code help.
 - [ ] After approval, put the store URL into `docs/index.html` (`CHROME_WEB_STORE_URL`) and push.
