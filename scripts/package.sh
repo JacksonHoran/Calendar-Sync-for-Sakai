@@ -33,7 +33,7 @@ if unzip -p "$out" manifest.json | grep -q '"key"'; then
   echo "error: packaged manifest still contains a key field" >&2
   exit 1
 fi
-if unzip -l "$out" | grep -Eq ' (test/|docs/|scripts/|node_modules/|key\.pem)'; then
+if unzip -l "$out" | grep -Eq ' (test/|docs/|scripts/|store-assets/|node_modules/|key\.pem)'; then
   echo "error: package contains non-runtime files" >&2
   exit 1
 fi

@@ -25,7 +25,7 @@ Everything needed to go from "works on my machine" to the Chrome Web Store, in d
 - [x] GitHub repo: `JacksonHoran/Calendar-Sync-for-Sakai`. It must be public for free GitHub Pages.
 - [x] Repo **Settings → Pages →** Source: deploy from branch `main`, folder **`/docs`**.
 - [x] Confirm `https://jacksonhoran.github.io/Calendar-Sync-for-Sakai/` and `.../privacy.html` load.
-- [ ] **Verify the domain** in [Google Search Console](https://search.google.com/search-console): add `https://jacksonhoran.github.io/` as a URL-prefix property and verify with the HTML meta tag. Google OAuth verification requires this.
+- [x] **Verify the domain** in [Google Search Console](https://search.google.com/search-console): add `https://jacksonhoran.github.io/` as a URL-prefix property and verify with the HTML meta tag. Google OAuth verification requires this. Done; keep the tag in place, since Google re-checks it.
 
 ## 3. Chrome Web Store: first upload (draft only)
 
@@ -55,7 +55,7 @@ The store assigns its own ID, which differs from the dev ID `agfkkmblbjjkcfecamf
 ## 6. Store listing and review
 
 - [ ] **Store listing tab:** description (Appendix A), category **Workflow & Planning**, language English.
-- [ ] **Graphics:** the store icon is 128×128 (`icons/icon128.png`, though a more polished version is worth making), at least one **1280×800** screenshot, and a **440×280** small promo tile. Good screenshots: the popup showing "Up to date · Syncing to …", and Google Calendar week view with the Sakai Assignments events.
+- [ ] **Graphics:** the store icon is 128×128 (`icons/icon128.png`, though a more polished version is worth making), at least one **1280×800** screenshot, and a **440×280** small promo tile. Good screenshots: the popup showing "Up to date · Syncing to …", and Google Calendar week view with the Sakai Assignments events. Screenshots are in `store-assets/` (personal details blurred; never commit unblurred originals). Promo tile: `store-assets/promo-tile-440x280.png`. Optional marquee (1400×560): `store-assets/marquee-1400x560.png`.
 - [ ] **Privacy practices tab:** single purpose, permission justifications, and data usage (Appendices B and C). Privacy policy URL: `https://jacksonhoran.github.io/Calendar-Sync-for-Sakai/privacy.html`.
 - [ ] **Distribution:** Visibility **Unlisted** for the pilot, then Public.
 - [ ] **Submit for review.** Reviews usually take a few days. Narrow host permissions (only `sakai.luc.edu`) and no remote code help.
