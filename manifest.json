@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Calendar Sync for Sakai",
   "description": "Automatically keeps your Loyola Sakai assignment due dates in a dedicated Google Calendar.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyPRMTknM8xbxKA/Ck3SJzmGBKc7j9dFiPOeVasfWRNgpIQ2nbNRw5kh1V8nTqKHBGpbg2k/DiOugau+rqU61IiSsOL8drlVUEnkDuI8xIoJpjfnl84/eoJH/l7evU8eFnJlNh2AFJLLpu17MZGKa7xebfHW0UFzHDZajQuhJZ6MP+jeuX9sIrmr2mvwIzRS075dlSu11n4ua55W65iTWFAjDdgxp5li1ntLMvpETcsUEo2pMg5dV0XnWmhmf2zeAWb1SE2IuOnWTcc16ygGmLnD4nMvDRqh0lDP9KdiX6oW4TV9tt2u36fT+1qzeHzgRKHQrf+dpPUYH87K+dD0vcwIDAQAB",
   "background": {
     "service_worker": "src/background.js",
