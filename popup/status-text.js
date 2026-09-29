@@ -28,7 +28,10 @@ const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 // `googleConnected` is false until the user has clicked Connect once.
 export function describeStatus(status, { syncing, interrupted, googleConnected = true, now = Date.now() }) {
   const state = interrupted ? State.ERROR : status.state;
-  const text = interrupted ? "Last sync was interrupted" : MESSAGES[status.state] ?? status.state;
+  const reconnect = status.state === State.GOOGLE_AUTH_NEEDED && googleConnected;
+  const text = interrupted ? "Last sync was interrupted"
+    : reconnect ? "Reconnect Google Calendar to keep syncing"
+    : MESSAGES[status.state] ?? status.state;
 
   const details = [];
   if (syncing) {

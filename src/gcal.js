@@ -31,6 +31,14 @@ export async function getToken(interactive) {
     if (/bad client id|invalid_client|client_id/i.test(message)) {
       throw new GoogleAuthError("Google OAuth client isn't set up yet (see README: Google Cloud setup)");
     }
+    // Chrome's wording for "the user removed this app's access" (or never granted it) is
+    // "OAuth2 not granted or revoked." Say it in plain words, since it shows in the popup.
+    if (/not granted|revoked/i.test(message)) {
+      throw new GoogleAuthError("Google access was removed from your Google Account.");
+    }
+    if (/did not approve|user interaction required/i.test(message)) {
+      throw new GoogleAuthError("Google access wasn't approved. Connect Google Calendar to start syncing.");
+    }
     throw new GoogleAuthError(message);
   }
 }

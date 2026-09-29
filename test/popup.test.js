@@ -39,7 +39,18 @@ test("not connected yet: says assignments are ready, without Chrome's raw auth e
 
 test("connected but access lost: the error explains what to do", () => {
   const status = { state: "google_auth_needed", itemCount: 0, lastError: "New permission needed. Reconnect Google Calendar.", lastSuccess: NOW - 2 * 60 * MIN };
-  assert.equal(describeStatus(status, idle).detail, "New permission needed. Reconnect Google Calendar. · Last successful sync: 2 hr ago");
+  const { text, detail } = describeStatus(status, idle);
+  assert.equal(text, "Reconnect Google Calendar to keep syncing");
+  assert.equal(detail, "New permission needed. Reconnect Google Calendar. · Last successful sync: 2 hr ago");
+});
+
+test("access removed in the Google account: reconnect headline, plain reason", () => {
+  const status = { state: "google_auth_needed", itemCount: 41, lastError: "Google access was removed from your Google Account.", lastSuccess: NOW - 60 * MIN };
+  assert.deepEqual(describeStatus(status, idle), {
+    state: "google_auth_needed",
+    text: "Reconnect Google Calendar to keep syncing",
+    detail: "41 assignments ready to sync · Google access was removed from your Google Account. · Last successful sync: 1 hr ago",
+  });
 });
 
 test("logged out of Sakai never claims items are on the calendar", () => {

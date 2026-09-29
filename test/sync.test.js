@@ -158,6 +158,19 @@ test("a stale token is dropped and the request retried once", async () => {
   assert.deepEqual(chromeState.removedTokens, ["token-1"]);
 });
 
+test("access revoked in the Google account: plain-language reconnect message", async () => {
+  await sync({ reason: "test" });
+  chromeState.grantToken = false;
+  chromeState.cachedToken = null;
+  chromeState.authError = "OAuth2 not granted or revoked.";
+
+  const status = await sync({ reason: "test" });
+
+  assert.equal(status.state, "google_auth_needed");
+  assert.equal(status.lastError, "Google access was removed from your Google Account.");
+  assert.equal(chromeState.badge.text, "!");
+});
+
 test("a missing OAuth scope asks the user to reconnect", async () => {
   google.failNext.push({ status: 403, reason: "insufficientPermissions" });
 

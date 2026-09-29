@@ -23,6 +23,8 @@ export function installChromeMock({ token = "token-1", grantToken = true } = {})
   const state = {
     token,
     grantToken,
+    // What Chrome says when it has no token to give, e.g. "OAuth2 not granted or revoked."
+    authError: "The user is not signed in.",
     removedTokens: [],
     cachedToken: null, // like Chrome, getAuthToken keeps returning this until it's removed
     tokenRequests: [],
@@ -34,7 +36,7 @@ export function installChromeMock({ token = "token-1", grantToken = true } = {})
     identity: {
       async getAuthToken({ interactive }) {
         state.tokenRequests.push({ interactive });
-        if (!state.grantToken) throw new Error("The user is not signed in.");
+        if (!state.grantToken) throw new Error(state.authError);
         state.cachedToken ??= state.token;
         return { token: state.cachedToken };
       },
